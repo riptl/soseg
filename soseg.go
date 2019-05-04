@@ -33,6 +33,7 @@ func (t *Tree) Put(key int, size int) (created bool) {
 			Value:    size,
 			Terminal: true,
 		}
+		t.size++
 		return
 	}
 

@@ -13,9 +13,8 @@ func TestTree(t *testing.T) {
 	tree.Put(3, 1)
 	tree.Put(4, 2)
 
-	{
-		assert.Equal(t, tree.Total(), 11, "Wrong total amount")
-	}
+	assert.Equal(t, tree.Total(), 11, "Wrong total amount")
+	assert.Equal(t, tree.Size(), 5, "Wrong number of nodes")
 
 	{
 		val, offset, ok := tree.Get(2)
@@ -47,4 +46,9 @@ func TestTree(t *testing.T) {
 	tree.Remove(3)
 
 	assert.Equal(t, tree.Total(), 2, "Wrong total amount")
+
+	tree.Remove(4)
+
+	assert.Equal(t, tree.Total(), 0, "Tree isn't empty")
+	assert.Equal(t, tree.Size(), 0, "Tree isn't empty")
 }
