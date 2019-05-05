@@ -96,21 +96,18 @@ func (t *Tree) Get(key int) (size int, offset int, ok bool) {
 	}
 
 	n := t.Root
-	for {
-		if n.Terminal {
-			if key == n.Key {
-				return n.Value, offset, true
-			} else {
-				return 0, 0, false
-			}
+	for !n.Terminal {
+		if key < n.Key {
+			n = n.Children[0]
 		} else {
-			if key < n.Key {
-				n = n.Children[0]
-			} else {
-				offset += n.Children[0].Value
-				n = n.Children[1]
-			}
+			offset += n.Children[0].Value
+			n = n.Children[1]
 		}
+	}
+	if key == n.Key {
+		return n.Value, offset, true
+	} else {
+		return 0, 0, false
 	}
 }
 
@@ -177,29 +174,25 @@ func (t *Tree) Find(point int) (key int, ok bool) {
 
 	var offset int
 	n := t.Root
-	for {
-		if !n.Terminal {
-			// Point outside the total tree range
-			if point > offset+n.Value {
-				return 0, false
-			}
-
-			mid := offset + n.Children[0].Value
-			if point < mid {
-				n = n.Children[0]
-			} else {
-				offset = mid
-				n = n.Children[1]
-			}
-			continue
+	for !n.Terminal {
+		// Point outside the total tree range
+		if point > offset+n.Value {
+			return 0, false
 		}
 
-		if point < offset+n.Value {
-			return n.Key, true
+		mid := offset + n.Children[0].Value
+		if point < mid {
+			n = n.Children[0]
 		} else {
-			return n.Key, false
+			offset = mid
+			n = n.Children[1]
 		}
 	}
+	if point >= offset+n.Value {
+		return 0, false
+	}
+
+	return n.Key, true
 }
 
 // Total returns the sum of all weights in O(1).
